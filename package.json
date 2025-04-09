@@ -1,0 +1,23 @@
+{
+  "name": "kogakuin-shinjukuev-guide",
+  "version": "1.0.0",
+  "description": "新宿キャンパスのエレベーターを案内する。(階段もおまけで)",
+  "homepage": "https://github.com/Hoshimikan6490/kogakuin-shinjukuEV-guide#readme",
+  "bugs": {
+    "url": "https://github.com/Hoshimikan6490/kogakuin-shinjukuEV-guide/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Hoshimikan6490/kogakuin-shinjukuEV-guide.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
