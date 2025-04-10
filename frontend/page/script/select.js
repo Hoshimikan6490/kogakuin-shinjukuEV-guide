@@ -39,4 +39,13 @@ function getFloor() {
   }
 }
 
-function getRoom() {}
+function getRoom() {
+  const floor = document.getElementById("floor").value;
+  const roomSelect = document.getElementById("room");
+
+  // 階数の選択肢をリセット
+  roomSelect.innerHTML = `<option value="" disabled selected>選択してください</option>`;
+
+  // 階数の情報を補完
+  switch (floor) {}
+}
