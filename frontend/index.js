@@ -22,6 +22,6 @@ module.exports = async () => {
   });
 
   app.listen(3000, function () {
-    console.log(`[NodeJS] Application Listening on Port 3000`);
+    console.log(`[frontend] Application Listening on Port 3000`);
   });
 };
