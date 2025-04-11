@@ -11,3 +11,6 @@
 ### その他仕様
 - 学生証タッチが必要な教室はその旨を表示
 - EVだけじゃなくて階段情報も欲しい。
+
+## 情報源
+- フロアマップ：https://www.ceramic.or.jp/ig-nenkai/2019/program/map2019.pdf
