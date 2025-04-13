@@ -28,6 +28,9 @@ module.exports = async () => {
         if (!room) {
           room = {};
         }
+      } else if (building && floor) {
+        // 階と建物の両方の指定があった場合
+        room = room[building][floor];
       }
       return res.send(room);
     } catch (error) {
