@@ -1,4 +1,6 @@
-function getFloor() {
+const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL;
+
+export function getFloor() {
   const building = document.getElementById("building").value;
   const floorSelect = document.getElementById("floor");
 
@@ -39,7 +41,7 @@ function getFloor() {
   }
 }
 
-async function getRoom() {
+export async function getRoom() {
   const building = document.getElementById("building").value;
   const floor = document.getElementById("floor").value;
   const roomSelect = document.getElementById("room");
@@ -49,7 +51,7 @@ async function getRoom() {
 
   // 階数の情報を補完
   await fetch(
-    `http://localhost:3030/roomData?building=${building}&floor=${floor}`,
+    `http://${BACKEND_API_URL}/roomData?building=${building}&floor=${floor}`,
     {
       method: "GET",
     }

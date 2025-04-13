@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="/images/favicon.ico">
     <link rel="apple-touch-icon" href="/images/favicon.ico">
-    <link rel="stylesheet" href="style.css" type="text/css">
+    <link rel="stylesheet" href="/src/style.css">
     <title>ホーム｜Hoshimikan6490</title>
 </head>
 
@@ -65,7 +65,12 @@
     </footer>
 </body>
 
-<script src="script/goTop.js"></script>
-<script src="script/select.js"></script>
+<script type="module">
+    import { getFloor, getRoom } from "/src/select.js";
+    import { goTop } from "/src/goTop.js";
+    window.getFloor = getFloor;
+    window.getRoom = getRoom;
+    window.goTop = goTop;
+</script>
 
 </html>
