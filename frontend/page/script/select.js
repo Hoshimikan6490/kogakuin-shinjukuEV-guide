@@ -39,7 +39,8 @@ function getFloor() {
   }
 }
 
-function getRoom() {
+async function getRoom() {
+  const building = document.getElementById("building").value;
   const floor = document.getElementById("floor").value;
   const roomSelect = document.getElementById("room");
 
@@ -47,5 +48,25 @@ function getRoom() {
   roomSelect.innerHTML = `<option value="" disabled selected>選択してください</option>`;
 
   // 階数の情報を補完
-  switch (floor) {}
+  await fetch(
+    `http://localhost:3030/roomData?building=${building}&floor=${floor}`,
+    {
+      method: "GET",
+    }
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      data.forEach((room) => {
+        const option = document.createElement("option");
+        option.value = room;
+        option.textContent = room;
+        roomSelect.add(option);
+      });
+    })
+    .catch((error) => {
+      window.alert(
+        "階数の取得に失敗しました。正常にbackendとの接続設定が行われているか確認してください。"
+      );
+      console.error("Error fetching room data:", error);
+    });
 }
