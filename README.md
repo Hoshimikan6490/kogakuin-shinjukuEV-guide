@@ -16,3 +16,10 @@
 ## 情報源
 - フロアマップ：https://www.ceramic.or.jp/ig-nenkai/2019/program/map2019.pdf
 - キャンパスマップ：https://www.kogakuin.ac.jp/campus/fbb28u0000005ate-att/20250401_kogakuinmap.pdf
+
+## 起動方法
+frontendとbackendのそれぞれのディレクトリで、
+```
+npm run dev
+```
+をする事。
