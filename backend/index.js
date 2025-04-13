@@ -1,8 +1,11 @@
 module.exports = async () => {
   const express = require("express");
   const app = express();
-  const path = require("path");
+  const cors = require("cors");
   const fs = require("fs").promises;
+
+  // CORSの有効化
+  app.use(cors({ origin: "http://localhost:3000" }));
 
   app.get("/roomData", async function (req, res) {
     try {
