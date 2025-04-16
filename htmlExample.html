@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="ja">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>call from LINE</title>
+</head>
+
+<body>
+  <h1>受信データ一覧</h1>
+  <table id="messages" class="messages" border="1"></table>
+  <div style="position: absolute; top: 20px; right: 225px">
+    <a href="javascript:readAll();" class="readAll"><span>全て既読にする</span></a>
+  </div>
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"
+    integrity="sha384-2huaZvOR9iDzHqslqwpR87isEmrfxqyWOF7hr7BY6KG0+hVKLoEXMPUJw3ynWuhO"
+    crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    //タイムスタンプ変換用関数
+    function convertUnixTimestamp(unixTimestamp) {
+      // UNIXタイムスタンプをミリ秒から秒に変換
+      const date = new Date(unixTimestamp);
+
+      // 年月日時分秒を取得
+      const year = date.getFullYear();
+      const month = ("0" + (date.getMonth() + 1)).slice(-2);
+      const day = ("0" + date.getDate()).slice(-2);
+      const hours = ("0" + date.getHours()).slice(-2);
+      const minutes = ("0" + date.getMinutes()).slice(-2);
+      const seconds = ("0" + date.getSeconds()).slice(-2);
+      const ms = "0" + date.getMilliseconds();
+
+      // 形式をフォーマットしてreturn
+      return `${year}/${month}/${day} ${hours}時${minutes}分${seconds}秒${ms}`;
+    }
+
+    var socket = io();
+    socket.on("message", function (msg) {
+      const table = document.getElementById("messages");
+      while (table.firstChild) {
+        table.removeChild(table.firstChild);
+      }
+
+      // タイトルの行を作成
+      var newRow = document.createElement("tr");
+
+      let titleName = ["既読", "メッセージ内容", "送信者", "送信日時"];
+      for (type of titleName) {
+        if (type != "メッセージ内容") {
+          var readCell = document.createElement("th");
+          readCell.textContent = type;
+          newRow.appendChild(readCell);
+        } else {
+          var messageContentCell = document.createElement("th");
+          messageContentCell.textContent = type;
+          messageContentCell.classList.add("messageContents");
+          newRow.appendChild(messageContentCell);
+        }
+      }
+      table.appendChild(newRow);
+
+      var dataOrder = 1;
+
+      // 各メッセージ行を追加
+      for (value of msg) {
+        newRow = document.createElement("tr");
+        newRow.classList.add("data");
+
+        // 既読のセルを作成して追加
+        readCell = document.createElement("td");
+        var readButton = document.createElement("button");
+        readButton.textContent = "✅";
+        readButton.type = "button";
+        readButton.dataset.messageIndex = dataOrder;
+        readCell.appendChild(readButton);
+        newRow.appendChild(readCell);
+
+        // メッセージ内容のセルを作成して追加
+        messageCell = document.createElement("td");
+        messageCell.textContent = value.text;
+        newRow.appendChild(messageCell);
+
+        // 送信者のセルを作成して追加
+        senderCell = document.createElement("td");
+        var senderDiv = document.createElement("div");
+        senderDiv.classList.add("username");
+        var senderImg = document.createElement("img");
+        senderImg.setAttribute("src", value.author.url);
+        var senderName = document.createElement("h4");
+        senderName.textContent = value.author.name;
+        senderDiv.appendChild(senderImg);
+        senderDiv.appendChild(senderName);
+        senderCell.appendChild(senderDiv);
+        newRow.appendChild(senderCell);
+
+        //タイムスタンプを追加
+        messageCell = document.createElement("td");
+        messageCell.textContent = convertUnixTimestamp(value.timestamp);
+        newRow.appendChild(messageCell);
+
+        // 行をテーブルに追加
+        table.appendChild(newRow);
+        dataOrder++;
+
+        //ボタンが押された時の動作を設定
+        readButton.addEventListener("click", (event) => {
+          const messageIndex = event.target.dataset.messageIndex; // クリックされたボタンのメッセージインデックスを取得
+          socket.emit("read", messageIndex); // メッセージのインデックスを送信
+        });
+      }
+    });
+
+    function readAll() {
+      socket.emit("read", "ALL");
+    }
+  </script>
+</body>
+
+<style>
+  html {
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+  }
+
+  h1 {
+    margin: 0;
+  }
+
+  h4 {
+    margin: auto;
+  }
+
+  a.readAll {
+    margin: auto;
+    width: 200px;
+    padding: 3px;
+    align-items: center;
+    text-align: center;
+    background-image: linear-gradient(145deg, #3e49ab, #ba927b 50%, #ffc121);
+    border: 0;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all .3s;
+    position: absolute;
+    top: 50%;
+  }
+
+  a.readAll:active,
+  a.readAll:hover {
+    outline: 0;
+  }
+
+  a.readAll span {
+    background: #000;
+    padding: 1rem 1rem;
+    border-radius: 6px;
+    width: 100%;
+    height: 100%;
+    transition: 300ms;
+  }
+
+  a.readAll:hover span {
+    background: none;
+    color: #000;
+  }
+
+  table#messages th.messageContents {
+    width: 900px;
+  }
+
+  table#messages tr.data {
+    background-color: #ffa0a0;
+    white-space: pre-wrap;
+  }
+
+  table#messages img {
+    height: 50px;
+  }
+
+  table#messages div.username {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px;
+  }
+
+  .outside {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+</style>
+
+</html>
