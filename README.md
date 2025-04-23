@@ -17,6 +17,12 @@
 - フロアマップ：https://www.ceramic.or.jp/ig-nenkai/2019/program/map2019.pdf
 - キャンパスマップ：https://www.kogakuin.ac.jp/campus/fbb28u0000005ate-att/20250401_kogakuinmap.pdf
 
+## 構築方法
+1. `sudo apt update`
+2. `sudo apt upgrade -y`
+3. https://docs.aws.amazon.com/ja_jp/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html を参考にnodejsのインストール
+4. `frontend`と`backend`の両方で`npm i`
+
 ## 起動方法
 frontendとbackendのそれぞれのディレクトリで、
 ```
