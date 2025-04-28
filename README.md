@@ -21,10 +21,9 @@
 1. `sudo apt update`
 2. `sudo apt upgrade -y`
 3. https://docs.aws.amazon.com/ja_jp/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html を参考にnodejsのインストール
-4. `frontend`と`backend`の両方で`npm i`
+4. `npm i`
 
 ## 起動方法
-frontendとbackendのそれぞれのディレクトリで、
 ```
 npm run dev
 ```

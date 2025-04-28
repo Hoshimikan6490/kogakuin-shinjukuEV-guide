@@ -1,5 +1,3 @@
-const BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL;
-
 export function getFloor() {
   const building = document.getElementById("building").value;
   const floorSelect = document.getElementById("floor");
@@ -51,7 +49,7 @@ export async function getRoom() {
 
   // 階数の情報を補完
   await fetch(
-    `http://${BACKEND_API_URL}/roomData?building=${building}&floor=${floor}`,
+    `/roomData?building=${building}&floor=${floor}`,
     {
       method: "GET",
     }

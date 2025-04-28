@@ -1,15 +1,16 @@
 const express = require("express");
 const app = express();
-const cors = require("cors");
 const fs = require("fs").promises;
-require("dotenv").config();
+const path = require("path");
 
-const frontendApiUrl = process.env.FRONTEND_API_URL;
+// publicディレクトリを静的ファイルのルートとして設定
+app.use(express.static(path.join(__dirname, "public")));
 
-// CORSの有効化
-app.use(cors({ origin: `http://${frontendApiUrl}` }));
+app.get("/", (req, res) => {
+  res.sendFile(`${__dirname}/views/index.html`);
+});
 
-app.get("/roomData", async function (req, res) {
+app.get("/roomData", async (req, res) => {
   try {
     let room = await fs.readFile(`${__dirname}/roomData.json`, "utf-8");
     room = JSON.parse(room);
@@ -42,5 +43,5 @@ app.get("/roomData", async function (req, res) {
 });
 
 app.listen(3030, function () {
-  console.log(`[backend] Application Listening on Port 3030`);
+  console.log(`[KGU EV Guide] Application Listening on Port 3030`);
 });
