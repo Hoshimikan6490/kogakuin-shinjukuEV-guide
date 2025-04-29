@@ -35,7 +35,7 @@
         <div class="waku">
             <h1>受講予定の教室を指定してください</h1>
             <div class="form">
-                <form action="/search" method="get">
+                <form onsubmit="return onSubmit();">
                     <div class="selectBox">
                         <label for="building">建物</label>
                         <select name="building" id="building" onchange="getFloor()" required>
@@ -68,9 +68,11 @@
 <script type="module">
     import { getFloor, getRoom } from "/js/select.js";
     import { goTop } from "/js/goTop.js";
+    import { onSubmit } from "/js/onSubmit.js";
     window.getFloor = getFloor;
     window.getRoom = getRoom;
     window.goTop = goTop;
+    window.onSubmit = onSubmit;
 </script>
 
 </html>
