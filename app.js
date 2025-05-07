@@ -3,6 +3,8 @@ const app = express();
 const fs = require("fs").promises;
 const path = require("path");
 
+let port = 80;
+
 // publicディレクトリを静的ファイルのルートとして設定
 app.use(express.static(path.join(__dirname, "public")));
 
@@ -42,6 +44,6 @@ app.get("/roomData", async (req, res) => {
   }
 });
 
-app.listen(3030, function () {
-  console.log(`[KGU EV Guide] Application Listening on Port 3030`);
+app.listen(port, function () {
+  console.log(`[KGU EV Guide] Application Listening on Port ${port}`);
 });
