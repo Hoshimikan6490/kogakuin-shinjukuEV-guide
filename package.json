@@ -7,7 +7,9 @@
   "type": "commonjs",
   "scripts": {
     "dev": "node app.js",
-    "main start": "sudo node app.js"
+    "main:start": "node serverController.js start",
+    "main:stop": "node serverController.js stop",
+    "main:restart": "node serverController.js restart"
   },
   "dependencies": {
     "express": "^5.1.0",
