@@ -2,8 +2,13 @@ const express = require("express");
 const app = express();
 const fs = require("fs").promises;
 const path = require("path");
+const helmet = require("helmet");
 
+// ポートの設定
 let port = 80;
+
+// セキュアヘッダーの設定
+app.use(helmet());
 
 // publicディレクトリを静的ファイルのルートとして設定
 app.use(express.static(path.join(__dirname, "public")));
@@ -43,6 +48,8 @@ app.get("/roomData", async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 });
+
+app.get("/search", async (req, res) => {});
 
 app.listen(port, function () {
   console.log(`[KGU EV Guide] Application Listening on Port ${port}`);

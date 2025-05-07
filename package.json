@@ -7,9 +7,10 @@
   "type": "commonjs",
   "scripts": {
     "dev": "node app.js",
-    "main": "sudo node app.js"
+    "main start": "sudo node app.js"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "helmet": "^8.1.0"
   }
 }
