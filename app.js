@@ -8,7 +8,15 @@ const helmet = require("helmet");
 let port = 80;
 
 // セキュアヘッダーの設定
-app.use(helmet());
+app.use(
+  helmet.contentSecurityPolicy({
+    useDefaults: true,
+    directives: {
+      "img-src": ["'self'", "img.shields.io"],
+      "script-src": ["'self'"],
+    },
+  })
+);
 
 // publicディレクトリを静的ファイルのルートとして設定
 app.use(express.static(path.join(__dirname, "public")));
@@ -49,7 +57,9 @@ app.get("/roomData", async (req, res) => {
   }
 });
 
-app.get("/search", async (req, res) => {});
+app.get("/search", async (req, res) => {
+  res.status(503).send("Service Unavailable");
+});
 
 app.listen(port, function () {
   console.log(`[KGU EV Guide] Application Listening on Port ${port}`);

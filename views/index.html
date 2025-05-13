@@ -35,10 +35,10 @@
         <div class="waku">
             <h1>受講予定の教室を指定してください</h1>
             <div class="form">
-                <form onsubmit="return onSubmit();">
+                <form id="roomForm">
                     <div class="selectBox">
                         <label for="building">建物</label>
-                        <select name="building" id="building" onchange="getFloor()" required>
+                        <select name="building" id="building" required>
                             <option value="" disabled selected>選択してください</option>
                             <option value="A">高層棟(A棟)</option>
                             <option value="B">低層棟(B棟)</option>
@@ -46,7 +46,7 @@
                     </div>
                     <div class="selectBox">
                         <label for="floor">階数</label>
-                        <select name="floor" id="floor" onchange="getRoom()" required></select>
+                        <select name="floor" id="floor" required></select>
                     </div>
                     <div class="selectBox">
                         <label for="room">教室</label>
@@ -65,14 +65,6 @@
     </footer>
 </body>
 
-<script type="module">
-    import { getFloor, getRoom } from "/js/select.js";
-    import { goTop } from "/js/goTop.js";
-    import { onSubmit } from "/js/onSubmit.js";
-    window.getFloor = getFloor;
-    window.getRoom = getRoom;
-    window.goTop = goTop;
-    window.onSubmit = onSubmit;
-</script>
+<script type="module" src="/js/main.js"></script>
 
 </html>
