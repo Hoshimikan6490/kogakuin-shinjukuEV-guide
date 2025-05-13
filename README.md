@@ -21,10 +21,5 @@
 1. `sudo apt update`
 2. `sudo apt upgrade -y`
 3. https://docs.aws.amazon.com/ja_jp/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html を参考にnodejsのインストール
-4. `npm i`
-
-## 起動方法
-```
-npm run dev
-```
-をする事。
+4. `sudo docker compose build --no-cache`
+5. `sudo docker compose up`
