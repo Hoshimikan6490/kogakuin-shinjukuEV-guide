@@ -16,10 +16,13 @@
 ## 情報源
 - フロアマップ：https://www.ceramic.or.jp/ig-nenkai/2019/program/map2019.pdf
 - キャンパスマップ：https://www.kogakuin.ac.jp/campus/fbb28u0000005ate-att/20250401_kogakuinmap.pdf
+- docker-composeインストール手順： https://qiita.com/kensukeyoshida/items/d6a735350f406961110f
 
 ## 構築方法
 1. `sudo apt update`
 2. `sudo apt upgrade -y`
-3. https://docs.aws.amazon.com/ja_jp/sdk-for-javascript/v2/developer-guide/setting-up-node-on-ec2-instance.html を参考にnodejsのインストール
-4. `sudo docker compose build --no-cache`
-5. `sudo docker compose up`
+3. `sudo curl -L https://github.com/docker/compose/releases/download/vバージョン番号/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose`を実行するが、バージョン番号は、[このページ](https://github.com/docker/compose/releases)の最新版を使用する事。
+4. `sudo chmod +x /usr/local/bin/docker-compose`
+5. `sudo docker compose build --no-cache`
+6. `sudo docker compose up`
+
