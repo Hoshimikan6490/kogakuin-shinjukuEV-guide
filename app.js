@@ -27,7 +27,7 @@ app.get("/", (req, res) => {
 
 app.get("/roomData", async (req, res) => {
   try {
-    let room = await fs.readFile(`${__dirname}/roomData.json`, "utf-8");
+    let room = await fs.readFile(`${__dirname}/db/roomData.json`, "utf-8");
     room = JSON.parse(room);
 
     let building = req.query.building;
