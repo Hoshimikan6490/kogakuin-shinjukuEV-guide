@@ -58,6 +58,10 @@ app.get("/roomData", async (req, res) => {
 });
 
 app.get("/search", async (req, res) => {
+  let room = req.query.room;
+  let routeData = await fs.readFile(`${__dirname}/db/routeData.json`, "utf-8");
+  routeData = JSON.parse(routeData);
+
   res.status(503).send("Service Unavailable");
 });
 
