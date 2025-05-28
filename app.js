@@ -20,6 +20,13 @@ app.use(
   })
 );
 
+// helmetの基本使用（HSTS無効化）
+app.use(
+  helmet({
+    hsts: false,
+  })
+);
+
 // publicディレクトリを静的ファイルのルートとして設定
 app.use(express.static(path.join(__dirname, "public")));
 
