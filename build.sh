@@ -1,3 +1,6 @@
+# dockerのインストール
+curl https://get.docker.com | sh
+
 # 最新の docker-compose-linux-x86_64 の URL を取得
 url=$(curl -s https://api.github.com/repos/docker/compose/releases \
   | jq -r '.[0].assets[] | select(.name == "docker-compose-linux-x86_64") | .browser_download_url')
