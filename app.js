@@ -14,10 +14,12 @@ app.use(
   helmet.contentSecurityPolicy({
     useDefaults: true,
     directives: {
+      "default-src": ["'self'"],
       "img-src": ["'self'", "img.shields.io"],
       "script-src": ["'self'"],
+      "style-src": ["'self'", "'unsafe-inline'"], // CSSを許可
+      "font-src": ["'self'"], // フォントを許可
     },
-    upgradeInsecureRequests: false, // HTTPからHTTPSへのアップグレードを無効化
   })
 );
 
