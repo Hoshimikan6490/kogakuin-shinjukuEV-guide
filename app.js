@@ -2,29 +2,11 @@ const express = require("express");
 const app = express();
 const fs = require("fs").promises;
 const path = require("path");
-const helmet = require("helmet");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 // ポートの設定
 let port = 80;
-
-// セキュアヘッダーの設定
-app.use(
-  helmet.contentSecurityPolicy({
-    useDefaults: true,
-    directives: {
-      "default-src": ["'self'"],
-      "img-src": ["'self'", "img.shields.io", "data:"], // data:はfavicon等用
-      "script-src": ["'self'"],
-      "style-src": ["'self'", "'unsafe-inline'"],
-      "font-src": ["'self'", "data:"], // webフォント用
-      "connect-src": ["'self'"], // fetchやXHR用
-      "object-src": ["'none'"], // セキュリティ強化
-      "frame-src": ["'none'"],  // セキュリティ強化
-    },
-  })
-);
 
 // publicディレクトリを静的ファイルのルートとして設定
 app.use(express.static(path.join(__dirname, "public")));
