@@ -6,7 +6,9 @@
   "author": "",
   "type": "commonjs",
   "scripts": {
-    "main": "node app.js"
+    "build": "./build.bat",
+    "start": "sudo docker compose build --no-cache && sudo docker compose up",
+    "dev": "node app.js"
   },
   "dependencies": {
     "express": "^5.1.0",
