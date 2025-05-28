@@ -15,10 +15,13 @@ app.use(
     useDefaults: true,
     directives: {
       "default-src": ["'self'"],
-      "img-src": ["'self'", "img.shields.io"],
+      "img-src": ["'self'", "img.shields.io", "data:"], // data:はfavicon等用
       "script-src": ["'self'"],
-      "style-src": ["'self'", "'unsafe-inline'"], // CSSを許可
-      "font-src": ["'self'"], // フォントを許可
+      "style-src": ["'self'", "'unsafe-inline'"],
+      "font-src": ["'self'", "data:"], // webフォント用
+      "connect-src": ["'self'"], // fetchやXHR用
+      "object-src": ["'none'"], // セキュリティ強化
+      "frame-src": ["'none'"],  // セキュリティ強化
     },
   })
 );
