@@ -10,4 +10,4 @@ COPY . .
 
 RUN npm install --omit=dev
 EXPOSE 80
-CMD [ "npm", "run", "main" ]
+CMD [ "node", "app.js" ]
