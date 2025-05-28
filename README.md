@@ -23,6 +23,6 @@
 2. `sudo apt upgrade -y`
 3. `sudo curl -L https://github.com/docker/compose/releases/download/vバージョン番号/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose`を実行するが、バージョン番号は、[このページ](https://github.com/docker/compose/releases)の最新版を使用する事。
 4. `sudo chmod +x /usr/local/bin/docker-compose`
-5. `sudo docker compose build --no-cache`
-6. `sudo docker compose up`
+5. `sudo docker-compose build --no-cache`
+6. `sudo docker-compose up -d`
 
