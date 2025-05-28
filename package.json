@@ -6,7 +6,7 @@
   "author": "",
   "type": "commonjs",
   "scripts": {
-    "build": "./build.bat",
+    "build": "./build.sh",
     "start": "sudo docker compose build --no-cache && sudo docker compose up",
     "dev": "node app.js"
   },
