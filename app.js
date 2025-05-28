@@ -17,6 +17,7 @@ app.use(
       "img-src": ["'self'", "img.shields.io"],
       "script-src": ["'self'"],
     },
+    upgradeInsecureRequests: false, // HTTPからHTTPSへのアップグレードを無効化
   })
 );
 
