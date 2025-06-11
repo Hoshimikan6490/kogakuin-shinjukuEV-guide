@@ -16,7 +16,7 @@ app.use(express.static("views"));
 app.use("views", express.static("views"));
 
 app.get("/", (req, res) => {
-  res.render(`pages/index`);
+  res.render(`pages/index`, { pageTitle: "ホーム" });
 });
 
 app.get("/roomData", async (req, res) => {
