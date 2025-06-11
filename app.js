@@ -8,11 +8,15 @@ const fetch = (...args) =>
 // ポートの設定
 let port = 80;
 
-// publicディレクトリを静的ファイルのルートとして設定
-app.use(express.static(path.join(__dirname, "public")));
+// View engineをejsに設定
+app.set("view engine", "ejs");
+
+// 必要なデータを準備
+app.use(express.static("views"));
+app.use("views", express.static("views"));
 
 app.get("/", (req, res) => {
-  res.sendFile(`${__dirname}/views/index.html`);
+  res.render(`pages/index`);
 });
 
 app.get("/roomData", async (req, res) => {
