@@ -9,7 +9,7 @@
     "build": "chmod +x build.sh && ./build.sh",
     "start": "sudo docker-compose build --no-cache && sudo docker-compose up -d",
     "stop": "sudo docker-compose down",
-    "cacheClear": "./cacheClear.sh",
+    "cacheClear": "chmod +x cacheClear.sh && ./cacheClear.sh",
     "dev": "node app.js"
   },
   "dependencies": {
