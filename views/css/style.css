@@ -42,6 +42,20 @@ header {
     align-items: center;
 }
 
+.appName#short {
+    display: none;
+}
+
+@media screen and (max-width: 1223px) {
+    .appName#short {
+        display: inline-block;
+    }
+
+    .appName#normal {
+        display: none;
+    }
+}
+
 .headerLeft a {
     height: 100%;
     display: flex;
