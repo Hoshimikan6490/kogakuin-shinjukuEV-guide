@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# 権限獲得
+sudo su
+
 # Docker Compose の全サービス停止・削除
 docker-compose down --volumes --remove-orphans
 
