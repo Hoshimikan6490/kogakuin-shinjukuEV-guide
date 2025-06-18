@@ -85,8 +85,11 @@ app.get("/search", async (req, res) => {
     .then((data) => {
       return res.render(`pages/search`, {
         pageTitle: "検索結果",
-        room: data.room,
-        routes: routeData[data.building][data.floor][data.room],
+        room: data.room ? data.room : room,
+        routes:
+          !data.building || !data.floor || !data.room
+            ? null
+            : routeData[data?.building][data?.floor][data?.room],
       });
     });
 });

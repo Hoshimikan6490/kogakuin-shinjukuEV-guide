@@ -14,9 +14,13 @@
         <%- include('../templates/body'); %>
             <div class="waku" id="searchResult">
                 <h1><%- room %>への検索結果</h1>
-                <p>経路の第１候補： <%- routes.route1 %></p>
-                <p>経路の第２候補： <%- routes.route2 %></p>
-                <p>経路の第３候補： <%- routes.route3 %></p>
+                <% if (routes) { %>
+                    <p>経路の第１候補： <%- routes.route1 %></p>
+                    <p>経路の第２候補： <%- routes.route2 %></p>
+                    <p>経路の第３候補： <%- routes.route3 %></p>
+                    <% } else { %>
+                        <p>検索結果はありませんでした。</p>
+                        <% } %>
             </div>
     </main>
 
