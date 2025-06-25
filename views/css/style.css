@@ -92,7 +92,7 @@ main {
 
 @media screen and (max-width: 768px) {
     main {
-        padding: 80px 5% 40px;
+        padding: 130px 5% 40px;
     }
 }
 
@@ -128,6 +128,8 @@ a.button {
 }
 
 footer {
+    position: absolute;
+    bottom: 0px;
     background-color: rgb(200, 200, 200);
     padding-top: 10px;
     padding-bottom: 10px;
