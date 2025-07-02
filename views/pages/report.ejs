@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <%- include('../templates/head'); %>
+</head>
+
+<body>
+    <header>
+        <%- include('../templates/header'); %>
+    </header>
+
+    <main>
+        <%- include('../templates/body'); %>
+            <div class="waku">
+                <h1>
+                    <%- roomId %>への経路情報を追加する
+                </h1>
+                <div class="form">
+                    <form id="reportForm">
+                        <div class="selectBox">
+                            <label for="EV">使用エレベーター</label>
+                            <select name="EV" id="EV" required>
+                                <option value="" disabled selected>選択してください</option>
+                                <option value="EV1">EV01</option>
+                                <option value="EV2">EV02</option>
+                                <option value="EV3">EV03</option>
+                                <option value="EV4">EV04</option>
+                            </select>
+                        </div>
+                        <div class="selectBox">
+                            <label for="stairs">使用階段</label>
+                            <select name="stairs" id="stairs" required>
+                                <option value="" disabled selected>選択してください</option>
+                                <option value="northStairs">北側階段</option>
+                                <option value="eastStairs">東側階段</option>
+                                <option value="southStairs">南側階段</option>
+                                <option value="westStairs">西側階段</option>
+                            </select>
+                        </div>
+                        <div class="selectBox">
+                            <label for="orderOfPriority">先に使用するもの</label>
+                            <select name="orderOfPriority" id="orderOfPriority" required>
+                                <option value="" disabled selected>選択してください</option>
+                                <option value="EV">エレベーター</option>
+                                <option value="stairs">階段</option>
+                            </select>
+                        </div>
+                        <button type="submit">送信</button>
+                    </form>
+                </div>
+            </div>
+    </main>
+
+    <a class="return_top" href="#">▲TOPへ戻る</a>
+
+    <footer>
+        <%- include('../templates/footer'); %>
+    </footer>
+</body>
+
+<script type="module" src="/js/index.js"></script>
+
+</html>

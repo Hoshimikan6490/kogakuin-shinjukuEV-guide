@@ -93,6 +93,22 @@ app.get("/search", async (req, res) => {
     });
 });
 
+app.get("/report", (req, res) => {
+  let roomId = req.query.room;
+  if (!roomId || !roomId.match(/^[AB]-\d{4}$/)) {
+    // 部屋番号が不正な場合はエラーを返す
+    return res.status(400).send("Invalid room number format.");
+  }
+
+  res.render(`pages/report`, {
+    pageTitle: "経路情報報告フォーム",
+    roomId: roomId,
+  });
+});
+
+// 次回TODO
+app.post("/routeDataSubmit", async (req, res) => {});
+
 app.listen(port, function () {
   console.log(`[KGU EV Guide] Application Listening on Port ${port}`);
 });
