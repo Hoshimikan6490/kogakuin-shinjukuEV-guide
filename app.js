@@ -106,7 +106,7 @@ app.get("/report", (req, res) => {
   });
 });
 
-// 次回TODO
+// 次回TODO。データ追加時にDiscord webhookで通知を送る
 app.post("/routeDataSubmit", async (req, res) => {});
 
 app.listen(port, function () {
