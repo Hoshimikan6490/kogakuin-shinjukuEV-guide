@@ -45,7 +45,7 @@ app.get("/", (req, res) => {
 app.get("/api/roomData", async (req, res) => {
   try {
     let roomDB = await fs.readFile(
-      `${__dirname}/db/api/roomData.json`,
+      `${__dirname}/db/roomData.json`,
       "utf-8"
     );
     roomDB = JSON.parse(roomDB);
