@@ -14,26 +14,51 @@ app.set("view engine", "ejs");
 app.use(express.static("views"));
 app.use("views", express.static("views"));
 
+// 部屋番号が正しいか確認するfunction
+function isAvailableRoomID(roomDB, room) {
+  // 形式が正しいか確認
+  if (roomID.match(/^[AB]-\d{4}$/)) {
+    // 部屋番号の形式が正しい場合、部屋DBに存在するか確認
+    let building = room.split("-")[0];
+    let floor = room.split("-")[1].substring(0, 2);
+    let roomNumber = room.split("-")[1].substring(2);
+
+    // 建物が存在するか確認
+    if (roomDB[building]) {
+      // フロアが存在するか確認
+      if (roomDB[building][floor]) {
+        // 部屋番号が存在するか確認
+        return roomDB[building][floor].includes(roomNumber);
+      }
+    }
+
+    // どれかが存在しない場合はfalseを返す
+    return false;
+  }
+}
+
+// 各種ルーティングとCGIの設定
 app.get("/", (req, res) => {
   res.render(`pages/index`, { pageTitle: "ホーム" });
 });
 
-app.get("/roomData", async (req, res) => {
+app.get("/api/roomData", async (req, res) => {
   try {
-    let roomDB = await fs.readFile(`${__dirname}/db/roomData.json`, "utf-8");
+    let roomDB = await fs.readFile(
+      `${__dirname}/db/api/roomData.json`,
+      "utf-8"
+    );
     roomDB = JSON.parse(roomDB);
 
     // 部屋番号から他の情報を取得する
-    let roomNumber = req.query.room;
-    // 正しい部屋番号形式か確認
-    if (roomNumber) {
-      if (roomNumber.match(/^[AB]-\d{4}$/)) {
+    let roomID = req.query.room;
+    if (roomID) {
+      // 正しい部屋番号形式であり、その部屋が存在するか確認
+      if (isAvailableRoomID(roomDB, roomID)) {
         let roomInfo = {};
-        roomInfo.building = roomNumber.split("-")[0];
-        roomInfo.floor = String(
-          Number(roomNumber.split("-")[1].substring(0, 2))
-        );
-        roomInfo.room = roomNumber;
+        roomInfo.building = roomID.split("-")[0];
+        roomInfo.floor = String(Number(roomID.split("-")[1].substring(0, 2)));
+        roomInfo.room = roomID;
         return res.send(roomInfo);
       } else {
         return res.send({});
@@ -74,7 +99,7 @@ app.get("/search", async (req, res) => {
   routeData = JSON.parse(routeData);
 
   // 部屋番号から他データを取得
-  await fetch(`http://localhost:${port}/roomData?room=${room}`, {
+  await fetch(`http://localhost:${port}/api/roomData?room=${room}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -94,15 +119,15 @@ app.get("/search", async (req, res) => {
 });
 
 app.get("/report", (req, res) => {
-  let roomId = req.query.room;
-  if (!roomId || !roomId.match(/^[AB]-\d{4}$/)) {
+  let roomID = req.query.room;
+  if (!roomID || !roomID.match(/^[AB]-\d{4}$/)) {
     // 部屋番号が不正な場合はエラーを返す
     return res.status(400).send("Invalid room number format.");
   }
 
   res.render(`pages/report`, {
     pageTitle: "経路情報報告フォーム",
-    roomId: roomId,
+    roomID: roomID,
   });
 });
 

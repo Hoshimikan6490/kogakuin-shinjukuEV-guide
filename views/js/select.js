@@ -51,7 +51,7 @@ export async function getFloor() {
 }
 
 export async function getRoomList() {
-  const response = await fetch(`/roomData`, { method: "GET" });
+  const response = await fetch(`/api/roomData`, { method: "GET" });
   const data = await response.json();
   return data;
 }
@@ -70,7 +70,7 @@ export async function getRoom() {
   roomSelect.innerHTML = `<option value="" disabled selected>選択してください</option>`;
 
   // 階数の情報を補完
-  await fetch(`/roomData?building=${building}&floor=${floor}`, {
+  await fetch(`/api/roomData?building=${building}&floor=${floor}`, {
     method: "GET",
   })
     .then((response) => response.json())

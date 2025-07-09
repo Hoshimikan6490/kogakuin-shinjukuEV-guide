@@ -14,7 +14,7 @@
         <%- include('../templates/body'); %>
             <div class="waku">
                 <h1>
-                    <%- roomId %>への経路情報を追加する
+                    <%- roomID %>への経路情報を追加する
                 </h1>
                 <div class="form">
                     <form id="reportForm">
@@ -46,6 +46,7 @@
                                 <option value="stairs">階段</option>
                             </select>
                         </div>
+                        <input type="hidden" id="room" name="room" value="<%- roomID %>">
                         <button type="submit">送信</button>
                     </form>
                 </div>
@@ -59,6 +60,6 @@
     </footer>
 </body>
 
-<script type="module" src="/js/index.js"></script>
+<script type="module" src="/js/report.js"></script>
 
 </html>

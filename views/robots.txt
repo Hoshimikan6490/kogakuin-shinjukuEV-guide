@@ -1,4 +1,3 @@
 User-agent: *
-Disallow: /roomData
-Disallow: /routeData
+Disallow: /api/*
 Disallow: /search
