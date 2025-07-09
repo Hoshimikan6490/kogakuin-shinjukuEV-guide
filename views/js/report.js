@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function onSubmit() {
-  fetch("/api/routeDataSubmit", {
+  let status = await fetch("/api/routeDataSubmit", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -23,5 +23,10 @@ async function onSubmit() {
     }),
   });
 
-  // TODO: 報告完了の旨を表示し、その後トップ画面に戻るようにする
+  if (status.ok) {
+    alert("報告が完了しました。ありがとうございます！");
+    window.location.href = "/";
+  } else {
+    alert("報告に失敗しました。もう一度お試しください。");
+  }
 }
