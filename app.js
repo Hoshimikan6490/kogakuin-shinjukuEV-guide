@@ -156,16 +156,40 @@ app.post("/api/routeDataSubmit", async (req, res) => {
   // 部屋番号から他データを取得
   let roomData = await checkRoomID(room);
   if (!roomData.correct) {
-    return res.status(400).send("Invalid room number.");
+    return res.status(400).send("部屋番号が誤っています。修正して再度お試しください。");
   }
 
   // DB書き込み
-  // TODO: 追加
+  let routeData = fs.readFileSync(`${__dirname}/db/routeData.json`, "utf-8");
+  routeData = JSON.parse(routeData);
+  // データが重複しないように確認
+  let routes = routeData[roomData.building][roomData.floor][room];
+  for (let route in routes) {
+    if (
+      routes[route].EV === EV &&
+      routes[route].stairs === stairs &&
+      routes[route].orderOfPriority === orderOfPriority
+    ) {
+      return res.status(400).send("その経路情報はすでに登録されています。");
+    }
+  }
+
+  // 登録・書き込み
+  let routeCount = Object.keys(
+    routeData[roomData.building][roomData.floor]
+  ).length;
+  routeData[roomData.building][roomData.floor][room][`route${routeCount + 1}`] =
+    {
+      EV: EV,
+      stairs: stairs,
+      orderOfPriority: orderOfPriority,
+    };
+  fs.writeFileSync(`${__dirname}/db/routeData.json`, JSON.stringify(routeData));
 
   // Discord webhook通知
   // TODO: 追加
 
-  return res.status(200).send("Data submitted successfully.");
+  return res.status(200).send("データの登録に成功しました。");
 });
 
 app.listen(port, function () {
