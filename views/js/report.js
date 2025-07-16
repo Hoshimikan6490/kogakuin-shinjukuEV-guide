@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function onSubmit() {
-  let status = await fetch("/api/routeDataSubmit", {
+  await fetch("/api/routeDataSubmit", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,12 +21,19 @@ async function onSubmit() {
       stairs: document.getElementById("stairs").value,
       orderOfPriority: document.getElementById("orderOfPriority").value,
     }),
-  });
-
-  if (status.ok) {
-    alert("報告が完了しました。ありがとうございます！");
-    window.location.href = "/";
-  } else {
-    alert("報告に失敗しました。もう一度お試しください。");
-  }
+  })
+    .then((response) => {
+      if (!response.ok) {
+        // エラーレスポンスの場合
+        return response.text().then((text) => {
+          alert(text);
+          throw new Error(text);
+        });
+      }
+      return response.text();
+    })
+    .then((data) => {
+      alert(data);
+      window.location.href = "/";
+    });
 }
