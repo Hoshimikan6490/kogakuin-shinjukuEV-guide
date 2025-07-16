@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const fs = require("fs").promises;
+const fs = require("fs");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -23,15 +23,14 @@ function isAvailableRoomID(roomDB, roomID) {
   if (roomID.match(/^[AB]-\d{4}$/)) {
     // 部屋番号の形式が正しい場合、部屋DBに存在するか確認
     let building = roomID.split("-")[0];
-    let floor = roomID.split("-")[1].substring(0, 2);
-    let roomNumber = roomID.split("-")[1].substring(2);
+    let floor = roomID.split("-")[1].substring(0, 2).replace(/^0+/, "");
 
     // 建物が存在するか確認
     if (roomDB[building]) {
       // フロアが存在するか確認
       if (roomDB[building][floor]) {
         // 部屋番号が存在するか確認
-        return roomDB[building][floor].includes(roomNumber);
+        return roomDB[building][floor].includes(roomID);
       }
     }
 
@@ -40,18 +39,12 @@ function isAvailableRoomID(roomDB, roomID) {
   }
 }
 
-// 各種ルーティングとCGIの設定
-app.get("/", (req, res) => {
-  res.render(`pages/index`, { pageTitle: "ホーム" });
-});
-
-app.get("/api/roomData", async (req, res) => {
+function checkRoomID(roomID, building, floor) {
   try {
-    let roomDB = await fs.readFile(`${__dirname}/db/roomData.json`, "utf-8");
+    let roomDB = fs.readFileSync(`${__dirname}/db/roomData.json`, "utf-8");
     roomDB = JSON.parse(roomDB);
 
     // 部屋番号から他の情報を取得する
-    let roomID = req.query.room;
     if (roomID) {
       // 正しい部屋番号形式であり、その部屋が存在するか確認
       if (isAvailableRoomID(roomDB, roomID)) {
@@ -60,15 +53,13 @@ app.get("/api/roomData", async (req, res) => {
         roomInfo.building = roomID.split("-")[0];
         roomInfo.floor = String(Number(roomID.split("-")[1].substring(0, 2)));
         roomInfo.room = roomID;
-        return res.send(roomInfo);
+        return roomInfo;
       } else {
-        return res.send({ correct: false });
+        return { correct: false };
       }
     }
 
     // 建物やフロア番号から取得する
-    let building = req.query.building;
-    let floor = req.query.floor;
     if (!building && floor) {
       // 階の指定のみがあった場合
       roomDB.A = {
@@ -79,44 +70,69 @@ app.get("/api/roomData", async (req, res) => {
       };
     } else if (building && !floor) {
       // 建物の指定のみがあった場合
-      roomDB = roomDB[building];
+      roomDB = { [building]: roomDB[building] };
       if (!roomDB) {
         roomDB = {};
       }
     } else if (building && floor) {
       // 階と建物の両方の指定があった場合
-      roomDB = roomDB[building][floor];
+      roomDB = {
+        [building]: {
+          [floor]: roomDB[building][floor],
+        },
+      };
     }
-    return res.send(roomDB);
+    roomDB.correct = true;
+    return roomDB;
   } catch (error) {
     console.error(error);
-    res.status(500).send("Internal Server Error");
+    return { correct: false };
+  }
+}
+
+// 各種ルーティングとCGIの設定
+app.get("/", (req, res) => {
+  res.render(`pages/index`, { pageTitle: "ホーム" });
+});
+
+app.get("/api/roomData", async (req, res) => {
+  let room = req.query.room;
+  let building = req.query.building;
+  let floor = req.query.floor;
+  let roomData = await checkRoomID(room, building, floor);
+
+  if (roomData.correct) {
+    return res.send(roomData);
+  } else {
+    return res.status(400).send("Room data not found.");
   }
 });
 
 app.get("/search", async (req, res) => {
   let room = req.query.room;
-  let routeData = await fs.readFile(`${__dirname}/db/routeData.json`, "utf-8");
+  let routeData = fs.readFileSync(`${__dirname}/db/routeData.json`, "utf-8");
   routeData = JSON.parse(routeData);
 
+  // 部屋番号の指定が無い場合はrootページにリダイレクト
+  if (!room) {
+    return res.redirect("/");
+  }
+
   // 部屋番号から他データを取得
-  await fetch(`http://localhost:${port}/api/roomData?room=${room}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      return res.render(`pages/search`, {
-        pageTitle: "検索結果",
-        room: data.room ? data.room : room,
-        routes:
-          !data.building || !data.floor || !data.room
-            ? null
-            : routeData[data?.building][data?.floor][data?.room],
-      });
-    });
+  let roomData = await checkRoomID(room);
+  if (!roomData.correct) {
+    return res.status(400).send("Invalid room number format.");
+  }
+
+  // 部屋番号が正しい場合、データを取得して表示
+  return res.render(`pages/search`, {
+    pageTitle: "検索結果",
+    room: roomData.room ? roomData.room : room,
+    routes:
+      !roomData.building || !roomData.floor || !roomData.room
+        ? null
+        : routeData[roomData?.building][roomData?.floor][roomData?.room],
+  });
 });
 
 app.get("/report", (req, res) => {
@@ -135,20 +151,10 @@ app.get("/report", (req, res) => {
 // 次回TODO。データ追加時にDiscord webhookで通知を送る
 app.post("/api/routeDataSubmit", async (req, res) => {
   // データの受け取り
-  console.log(req.body);
   let { room, EV, stairs, orderOfPriority } = req.body;
 
-  // 教室番号チェック
-  let roomData = await fetch(
-    `http://localhost:${port}/api/roomData?room=${room}`,
-    {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
-  roomData = await roomData.json();
+  // 部屋番号から他データを取得
+  let roomData = await checkRoomID(room);
   if (!roomData.correct) {
     return res.status(400).send("Invalid room number.");
   }
