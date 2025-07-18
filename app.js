@@ -45,6 +45,22 @@ function checkRoomID(roomID, building, floor) {
     roomDB = JSON.parse(roomDB);
 
     // 部屋番号から他の情報を取得する
+    if (roomID == "アトリウム") {
+      return {
+        correct: true,
+        building: "A",
+        floor: "1",
+        room: "アトリウム",
+      };
+    } else if (roomID == "アーバンテックホール") {
+      return {
+        correct: true,
+        building: "A",
+        floor: "3",
+        room: "アーバンテックホール",
+      };
+    }
+
     if (roomID) {
       // 正しい部屋番号形式であり、その部屋が存在するか確認
       if (isAvailableRoomID(roomDB, roomID)) {
