@@ -48,12 +48,12 @@ function checkRoomID(roomID, building, floor) {
     if (roomID) {
       // 正しい部屋番号形式であり、その部屋が存在するか確認
       if (isAvailableRoomID(roomDB, roomID)) {
-        let roomInfo = {};
-        roomInfo.correct = true;
-        roomInfo.building = roomID.split("-")[0];
-        roomInfo.floor = String(Number(roomID.split("-")[1].substring(0, 2)));
-        roomInfo.room = roomID;
-        return roomInfo;
+        return (roomInfo = {
+          correct: true,
+          building: roomID.split("-")[0],
+          floor: String(Number(roomID.split("-")[1].substring(0, 2))),
+          room: roomID,
+        });
       } else {
         return { correct: false };
       }
@@ -156,7 +156,9 @@ app.post("/api/routeDataSubmit", async (req, res) => {
   // 部屋番号から他データを取得
   let roomData = await checkRoomID(room);
   if (!roomData.correct) {
-    return res.status(400).send("部屋番号が誤っています。修正して再度お試しください。");
+    return res
+      .status(400)
+      .send("部屋番号が誤っています。修正して再度お試しください。");
   }
 
   // DB書き込み
