@@ -3,8 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (form) {
     form.addEventListener("submit", async (e) => {
-      await onSubmit();
       e.preventDefault();
+      await onSubmit();
     });
   }
 });
