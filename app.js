@@ -151,10 +151,11 @@ app.get("/search", async (req, res) => {
   });
 });
 
-app.get("/report", (req, res) => {
+app.get("/report", async (req, res) => {
   let roomID = req.query.room;
-  if (!roomID || !roomID.match(/^[AB]-\d{4}$/)) {
-    // 部屋番号が不正な場合はエラーを返す
+  // 部屋番号から他データを取得
+  let roomData = await checkRoomID(roomID);
+  if (!roomData.correct) {
     return res.status(400).send("Invalid room number format.");
   }
 
@@ -180,6 +181,18 @@ app.post("/api/routeDataSubmit", async (req, res) => {
   // DB書き込み
   let routeData = fs.readFileSync(`${__dirname}/db/routeData.json`, "utf-8");
   routeData = JSON.parse(routeData);
+
+  // 建物、フロア、部屋の構造が存在することを確認し、存在しない場合は作成
+  if (!routeData[roomData.building]) {
+    routeData[roomData.building] = {};
+  }
+  if (!routeData[roomData.building][roomData.floor]) {
+    routeData[roomData.building][roomData.floor] = {};
+  }
+  if (!routeData[roomData.building][roomData.floor][room]) {
+    routeData[roomData.building][roomData.floor][room] = {};
+  }
+
   // データが重複しないように確認
   let routes = routeData[roomData.building][roomData.floor][room];
   for (let route in routes) {
@@ -193,9 +206,7 @@ app.post("/api/routeDataSubmit", async (req, res) => {
   }
 
   // 登録・書き込み
-  let routeCount = Object.keys(
-    routeData[roomData.building][roomData.floor]
-  ).length;
+  let routeCount = Object.keys(routes).length || 0;
   routeData[roomData.building][roomData.floor][room][`route${routeCount + 1}`] =
     {
       EV: EV,
