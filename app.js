@@ -206,14 +206,14 @@ app.post("/api/routeDataSubmit", async (req, res) => {
   }
 
   // 登録・書き込み
-  let routeCount = Object.keys(routes).length || 0;
+  let routeCount = Object.keys(routes).length;
   routeData[roomData.building][roomData.floor][room][`route${routeCount + 1}`] =
     {
       EV: EV,
       stairs: stairs,
       orderOfPriority: orderOfPriority,
     };
-  fs.writeFileSync(`${__dirname}/db/routeData.json`, JSON.stringify(routeData));
+  fs.writeFileSync(`${__dirname}/db/routeData.json`, JSON.stringify(routeData, null, 2));
 
   // Discord webhook通知
   const webhookURL = process.env.Discord_Webhook_URL;
