@@ -75,7 +75,7 @@ export async function getRoom() {
   })
     .then((response) => response.json())
     .then((data) => {
-      data.forEach((room) => {
+      data[building][floor].forEach((room) => {
         const option = document.createElement("option");
         option.value = room;
         option.textContent = room;
