@@ -3,6 +3,7 @@ const app = express();
 const fs = require("fs");
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
+require("dotenv").config({ quiet: true });
 
 // ポートの設定
 let port = 80;
@@ -165,7 +166,6 @@ app.get("/report", async (req, res) => {
   });
 });
 
-// 次回TODO。データ追加時にDiscord webhookで通知を送る
 app.post("/api/routeDataSubmit", async (req, res) => {
   // データの受け取り
   let { room, EV, stairs, orderOfPriority } = req.body;
@@ -216,7 +216,28 @@ app.post("/api/routeDataSubmit", async (req, res) => {
   fs.writeFileSync(`${__dirname}/db/routeData.json`, JSON.stringify(routeData));
 
   // Discord webhook通知
-  // TODO: 追加
+  const webhookURL = process.env.Discord_Webhook_URL;
+  if (!webhookURL) {
+    console.error(
+      "[ERROR] Discord Webhook URL is not set. Please set on .env file."
+    );
+    console.info(`[INFO] Route data submitted: ${JSON.stringify(req.body)}`);
+  } else {
+    const webhookData = {
+      content: `新しい経路情報が登録されました。\n部屋番号: ${room}\nEV: ${EV}\n階段: ${stairs}\n優先度: ${orderOfPriority}`,
+    };
+
+    try {
+      await fetch(webhookURL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(webhookData),
+      });
+    } catch (error) {
+      console.error("[ERROR] Failed to send Discord webhook:", error);
+      return res.status(500).send("Discord webhookの送信に失敗しました。");
+    }
+  }
 
   return res.status(200).send("データの登録に成功しました。");
 });
