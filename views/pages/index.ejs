@@ -26,15 +26,22 @@
                         </div>
                         <div class="selectBox">
                             <label for="floor">階数</label>
-                            <select name="floor" id="floor" required></select>
+                            <select name="floor" id="floor" required>
+                                <option value="" disabled selected>選択してください</option>
+                            </select>
                         </div>
                         <div class="selectBox">
                             <label for="room">教室</label>
-                            <select name="room" id="room" required></select>
+                            <select name="room" id="room" required>
+                                <option value="" disabled selected>選択してください</option>
+                            </select>
                         </div>
-                        <button type="submit">検索</button>
+                        <div class="submitBox">
+                            <button type="submit" class="submit">検索</button>
+                        </div>
                     </form>
                 </div>
+                <p>※上から順に選択してください</p>
             </div>
     </main>
 

@@ -106,12 +106,36 @@ main {
 }
 
 .form {
-    margin-bottom: 20px;
+    background-color: gainsboro;
+    width: 80%;
+    margin: 0 auto 20px;
+    padding: 10px;
+    font-size: 20px;
+    border-radius: 10px;
 }
 
-a.button {
+label {
+    padding: 10px;
+    padding-right: 5px;
+}
+
+select {
+    margin: 10px;
+    width: 80%;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    font-weight: bold;
+}
+
+.submitBox {
+    text-align: center;
+    margin: 0 auto;
+}
+
+button {
     background-color: #498205;
-    width: 25%;
+    width: 30%;
     font-size: large;
     display: inline-block;
     text-align: center;
