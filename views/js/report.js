@@ -35,5 +35,9 @@ async function onSubmit() {
     .then((data) => {
       alert(data);
       window.location.href = "/";
+    })
+    .catch((error) => {
+      console.error("送信エラー:", error);
+      alert("送信に失敗しました。ネットワーク接続を確認してください。");
     });
 }

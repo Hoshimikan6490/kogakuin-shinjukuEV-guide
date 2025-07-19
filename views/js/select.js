@@ -1,52 +1,59 @@
 export async function getFloor() {
-  const building = document.getElementById("building").value;
-  const floorSelect = document.getElementById("floor");
+  try {
+    const building = document.getElementById("building").value;
+    const floorSelect = document.getElementById("floor");
 
-  // 部屋情報を取得
-  const roomData = await getRoomList();
+    // 部屋情報を取得
+    const roomData = await getRoomList();
 
-  // 階数の選択肢をリセット
-  floorSelect.innerHTML = `<option value="" disabled selected>選択してください</option>`;
+    // 階数の選択肢をリセット
+    floorSelect.innerHTML = `<option value="" disabled selected>選択してください</option>`;
 
-  // 階数の情報を補完
-  if (building == "A") {
-    // 高層棟の処理
-    const floorsA = [];
-    for (let i = 6; i >= 1; i--) {
-      // 部屋情報の登録数の確認
-      let roomCount = await getRoomCount(roomData, building, `B${i}`);
-      floorsA.push({ value: `B${i}`, text: `地下${i}階 (${roomCount})` });
+    // 階数の情報を補完
+    if (building == "A") {
+      // 高層棟の処理
+      const floorsA = [];
+      for (let i = 6; i >= 1; i--) {
+        // 部屋情報の登録数の確認
+        let roomCount = await getRoomCount(roomData, building, `B${i}`);
+        floorsA.push({ value: `B${i}`, text: `地下${i}階 (${roomCount})` });
+      }
+      for (let i = 1; i <= 28; i++) {
+        // 部屋情報の登録数の確認
+        let roomCount = await getRoomCount(roomData, building, i);
+        floorsA.push({ value: i, text: `${i}階 (${roomCount})` });
+      }
+      floorsA.forEach((floor) => {
+        const option = document.createElement("option");
+        option.value = floor.value;
+        option.textContent = floor.text;
+        floorSelect.add(option);
+      });
+    } else if (building == "B") {
+      // 低層棟の処理
+      const floorsB = [];
+      for (let i = 6; i >= 1; i--) {
+        // 部屋情報の登録数の確認
+        let roomCount = await getRoomCount(roomData, building, `B${i}`);
+        floorsB.push({ value: `B${i}`, text: `地下${i}階 (${roomCount})` });
+      }
+      for (let i = 1; i <= 8; i++) {
+        // 部屋情報の登録数の確認
+        let roomCount = await getRoomCount(roomData, building, i);
+        floorsB.push({ value: i, text: `${i}階 (${roomCount})` });
+      }
+      floorsB.forEach((floor) => {
+        const option = document.createElement("option");
+        option.value = floor.value;
+        option.textContent = floor.text;
+        floorSelect.add(option);
+      });
     }
-    for (let i = 1; i <= 28; i++) {
-      // 部屋情報の登録数の確認
-      let roomCount = await getRoomCount(roomData, building, i);
-      floorsA.push({ value: i, text: `${i}階 (${roomCount})` });
-    }
-    floorsA.forEach((floor) => {
-      const option = document.createElement("option");
-      option.value = floor.value;
-      option.textContent = floor.text;
-      floorSelect.add(option);
-    });
-  } else if (building == "B") {
-    // 低層棟の処理
-    const floorsB = [];
-    for (let i = 6; i >= 1; i--) {
-      // 部屋情報の登録数の確認
-      let roomCount = await getRoomCount(roomData, building, `B${i}`);
-      floorsB.push({ value: `B${i}`, text: `地下${i}階 (${roomCount})` });
-    }
-    for (let i = 1; i <= 8; i++) {
-      // 部屋情報の登録数の確認
-      let roomCount = await getRoomCount(roomData, building, i);
-      floorsB.push({ value: i, text: `${i}階 (${roomCount})` });
-    }
-    floorsB.forEach((floor) => {
-      const option = document.createElement("option");
-      option.value = floor.value;
-      option.textContent = floor.text;
-      floorSelect.add(option);
-    });
+  } catch (error) {
+    console.error("階数の取得に失敗しました:", error);
+    window.alert(
+      "階数の取得に失敗しました。正常にbackendとの接続設定が行われているか確認してください。"
+    );
   }
 }
 
