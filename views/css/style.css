@@ -165,6 +165,26 @@ footer {
     padding-bottom: 10px;
     width: 100%;
     text-align: center;
+    margin-top: auto;
+}
+
+/* 700px以下の画面サイズでのfooter調整 */
+@media screen and (max-width: 700px) {
+    body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    main {
+        flex: 1;
+        padding: 130px 5% 40px;
+    }
+
+    footer {
+        position: static;
+        margin-top: auto;
+    }
 }
 
 .return_top {
