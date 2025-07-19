@@ -96,19 +96,24 @@ main {
     }
 }
 
+h1,
+p {
+    margin: 0px;
+}
+
 .waku {
     border: 1px solid #333333;
     border-radius: 10px;
     max-width: 1600px;
     width: 80%;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 20px;
 }
 
 .form {
     background-color: gainsboro;
     width: 80%;
-    margin: 0 auto 20px;
+    margin: 10px auto;
     padding: 10px;
     font-size: 20px;
     border-radius: 10px;
@@ -128,7 +133,7 @@ select {
     font-weight: bold;
 }
 
-.submitBox {
+.buttonBox {
     text-align: center;
     margin: 0 auto;
 }
@@ -145,10 +150,11 @@ button {
     padding-top: 10px;
     padding-bottom: 10px;
     border-radius: 10px;
+    margin: 10px 0px;
 }
 
-.article_buttons {
-    text-align: center;
+.waku#report {
+    margin: 10px auto 0px;
 }
 
 footer {

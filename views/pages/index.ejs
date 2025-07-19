@@ -13,7 +13,7 @@
     <main>
         <%- include('../templates/body'); %>
             <div class="waku">
-                <h1>受講予定の教室を指定してください</h1>
+                <h1>経路を探したい教室を選択してください</h1>
                 <div class="form">
                     <form id="roomForm">
                         <div class="selectBox">
@@ -36,12 +36,18 @@
                                 <option value="" disabled selected>選択してください</option>
                             </select>
                         </div>
-                        <div class="submitBox">
-                            <button type="submit" class="submit">検索</button>
+                        <div class="buttonBox">
+                            <button type="submit">検索</button>
                         </div>
                     </form>
                 </div>
                 <p>※上から順に選択してください</p>
+            </div>
+            <div class="waku" id="report">
+                <h1>経路情報の報告はこちら</h1>
+                <div class="buttonBox">
+                    <button onclick="location.href='/report'">報告フォームへ</button>
+                </div>
             </div>
     </main>
 
