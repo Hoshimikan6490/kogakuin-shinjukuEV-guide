@@ -6,7 +6,7 @@ const fetch = (...args) =>
 require("dotenv").config({ quiet: true });
 
 // ポートの設定
-let port = 80;
+let port = process.env.PORT || 80;
 
 // View engineをejsに設定
 app.set("view engine", "ejs");
@@ -213,7 +213,10 @@ app.post("/api/routeDataSubmit", async (req, res) => {
       stairs: stairs,
       orderOfPriority: orderOfPriority,
     };
-  fs.writeFileSync(`${__dirname}/db/routeData.json`, JSON.stringify(routeData, null, 2));
+  fs.writeFileSync(
+    `${__dirname}/db/routeData.json`,
+    JSON.stringify(routeData, null, 2)
+  );
 
   // Discord webhook通知
   const webhookURL = process.env.Discord_Webhook_URL;
