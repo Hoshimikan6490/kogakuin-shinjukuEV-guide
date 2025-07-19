@@ -10,45 +10,27 @@ export async function getFloor() {
     floorSelect.innerHTML = `<option value="" disabled selected>選択してください</option>`;
 
     // 階数の情報を補完
-    if (building == "A") {
-      // 高層棟の処理
-      const floorsA = [];
-      for (let i = 6; i >= 1; i--) {
-        // 部屋情報の登録数の確認
-        let roomCount = await getRoomCount(roomData, building, `B${i}`);
-        floorsA.push({ value: `B${i}`, text: `地下${i}階 (${roomCount})` });
-      }
-      for (let i = 1; i <= 28; i++) {
-        // 部屋情報の登録数の確認
-        let roomCount = await getRoomCount(roomData, building, i);
-        floorsA.push({ value: i, text: `${i}階 (${roomCount})` });
-      }
-      floorsA.forEach((floor) => {
-        const option = document.createElement("option");
-        option.value = floor.value;
-        option.textContent = floor.text;
-        floorSelect.add(option);
-      });
-    } else if (building == "B") {
-      // 低層棟の処理
-      const floorsB = [];
-      for (let i = 6; i >= 1; i--) {
-        // 部屋情報の登録数の確認
-        let roomCount = await getRoomCount(roomData, building, `B${i}`);
-        floorsB.push({ value: `B${i}`, text: `地下${i}階 (${roomCount})` });
-      }
-      for (let i = 1; i <= 8; i++) {
-        // 部屋情報の登録数の確認
-        let roomCount = await getRoomCount(roomData, building, i);
-        floorsB.push({ value: i, text: `${i}階 (${roomCount})` });
-      }
-      floorsB.forEach((floor) => {
-        const option = document.createElement("option");
-        option.value = floor.value;
-        option.textContent = floor.text;
-        floorSelect.add(option);
+    let floors = [];
+    for (let i = 6; i >= 1; i--) {
+      // 部屋情報の登録数の確認
+      let roomCount = await getRoomCount(roomData, building, `${building}${i}`);
+      floors.push({
+        value: `${building}${i}`,
+        text: `地下${i}階 (${roomCount})`,
       });
     }
+    let floorCount = building == "A" ? 28 : 8;
+    for (let i = 1; i <= floorCount; i++) {
+      // 部屋情報の登録数の確認
+      let roomCount = await getRoomCount(roomData, building, i);
+      floors.push({ value: i, text: `${i}階 (${roomCount})` });
+    }
+    floors.forEach((floor) => {
+      const option = document.createElement("option");
+      option.value = floor.value;
+      option.textContent = floor.text;
+      floorSelect.add(option);
+    });
   } catch (error) {
     console.error("階数の取得に失敗しました:", error);
     window.alert(
