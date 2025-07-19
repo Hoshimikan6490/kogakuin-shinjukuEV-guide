@@ -4,7 +4,8 @@ export function onSubmit() {
   if (!room) return;
 
   let url = location.host;
-  document.location = `http://${url}/search?room=${room}`;
+  let protocol = location.protocol;
+  document.location = `${protocol}//${url}/search?room=${room}`;
 
   // formのsubmitを押した時に勝手にページ遷移しないためにfalse
   return false;
