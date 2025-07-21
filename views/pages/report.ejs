@@ -14,10 +14,31 @@
         <%- include('../templates/body'); %>
             <div class="waku">
                 <h1>
-                    <%- roomID %>への経路情報を追加する
+                    経路情報　報告フォーム
                 </h1>
                 <div class="form">
                     <form id="reportForm">
+                        <div class="selectBox">
+                            <label for="building">建物</label>
+                            <select name="building" id="building" required>
+                                <option value="" disabled selected>選択してください</option>
+                                <option value="A">高層棟(A棟)</option>
+                                <option value="B">低層棟(B棟)</option>
+                            </select>
+                        </div>
+                        <div class="selectBox">
+                            <label for="floor">階数</label>
+                            <select name="floor" id="floor" required>
+                                <option value="" disabled selected>選択してください</option>
+                            </select>
+                        </div>
+                        <div class="selectBox">
+                            <label for="room">教室</label>
+                            <select name="room" id="room" required>
+                                <option value="" disabled selected>選択してください</option>
+                            </select>
+                        </div>
+                        <hr>
                         <div class="selectBox">
                             <label for="EV">使用エレベーター</label>
                             <select name="EV" id="EV" required>
@@ -60,6 +81,6 @@
     </footer>
 </body>
 
-<script type="module" src="/js/report.js"></script>
+<script type="module" src="/js/report/main.js"></script>
 
 </html>

@@ -153,16 +153,8 @@ app.get("/search", async (req, res) => {
 });
 
 app.get("/report", async (req, res) => {
-  let roomID = req.query.room;
-  // 部屋番号から他データを取得
-  let roomData = await checkRoomID(roomID);
-  if (!roomData.correct) {
-    return res.status(400).send("Invalid room number format.");
-  }
-
   res.render(`pages/report`, {
     pageTitle: "経路情報報告フォーム",
-    roomID: roomID,
   });
 });
 
@@ -238,7 +230,9 @@ app.post("/api/routeDataSubmit", async (req, res) => {
       });
     } catch (error) {
       console.error("[ERROR] Failed to send Discord webhook:", error);
-      return res.status(500).send("Discord webhookの送信に失敗しました。");
+      console.info(
+        `Discord webhookの送信に失敗しました。送信に失敗した登録データ: ${req.body}`
+      );
     }
   }
 
