@@ -13,9 +13,9 @@ export async function getFloor() {
     let floors = [];
     for (let i = 6; i >= 1; i--) {
       // 部屋情報の登録数の確認
-      let roomCount = await getRoomCount(roomData, building, `${building}${i}`);
+      let roomCount = await getRoomCount(roomData, building, `B${i}`);
       floors.push({
-        value: `${building}${i}`,
+        value: `B${i}`,
         text: `地下${i}階 (${roomCount})`,
       });
     }
