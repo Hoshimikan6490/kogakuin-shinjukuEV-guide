@@ -157,6 +157,11 @@ button {
     margin: 10px auto 0px;
 }
 
+hr {
+    border: 1px solid #333333;
+    margin: 20px 0px;
+}
+
 footer {
     position: absolute;
     bottom: 0px;
