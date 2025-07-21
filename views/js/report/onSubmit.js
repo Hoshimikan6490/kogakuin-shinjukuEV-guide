@@ -1,15 +1,4 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("reportForm");
-
-  if (form) {
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      await onSubmit();
-    });
-  }
-});
-
-async function onSubmit() {
+export async function onSubmit() {
   await fetch("/api/routeDataSubmit", {
     method: "POST",
     headers: {

@@ -1,5 +1,5 @@
 import { getFloor, getRoom } from "/js/select.js";
-import { onSubmit } from "/js/onSubmit.js";
+import { onSubmit } from "/js/index/onSubmit.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("roomForm");
