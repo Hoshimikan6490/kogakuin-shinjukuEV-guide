@@ -4,6 +4,15 @@ const fs = require("fs");
 const fetch = (...args) =>
 	import("node-fetch").then(({ default: fetch }) => fetch(...args));
 require("dotenv").config({ quiet: true });
+// MongoDB関連のインポート
+const mongoose = require("mongoose");
+const {
+	connectDB,
+	initializeRouteDataFromJSON,
+	startPeriodicSync,
+	syncMongoDBToJSON,
+} = require("./utils/database");
+const RouteData = require("./models/RouteData");
 
 // ポートの設定
 let port = process.env.PORT || 80;
@@ -146,8 +155,6 @@ app.get("/api/roomData", async (req, res) => {
 
 app.get("/search", async (req, res) => {
 	let room = req.query.room;
-	let routeData = fs.readFileSync(`${__dirname}/db/routeData.json`, "utf-8");
-	routeData = JSON.parse(routeData);
 
 	// 部屋番号の指定が無い場合はrootページにリダイレクト
 	if (!room) {
@@ -160,14 +167,29 @@ app.get("/search", async (req, res) => {
 		return res.status(400).send("Invalid room number format.");
 	}
 
+	// MongoDBからルートデータを取得
+	let routes = null;
+	if (roomData.building && roomData.floor && roomData.room) {
+		try {
+			const routeDocument = await RouteData.findOne({
+				building: roomData.building,
+				floor: roomData.floor,
+				room: roomData.room,
+			});
+
+			if (routeDocument) {
+				routes = Object.fromEntries(routeDocument.routes);
+			}
+		} catch (error) {
+			console.error("[KGU EV Guide] Error fetching route data:", error);
+		}
+	}
+
 	// 部屋番号が正しい場合、データを取得して表示
 	return res.render(`pages/search`, {
 		pageTitle: "検索結果",
 		room: roomData.room ? roomData.room : room,
-		routes:
-			!roomData.building || !roomData.floor || !roomData.room
-				? null
-				: routeData[roomData?.building][roomData?.floor][roomData?.room],
+		routes: routes,
 	});
 });
 
@@ -189,77 +211,131 @@ app.post("/api/routeDataSubmit", async (req, res) => {
 			.send("部屋番号が誤っています。修正して再度お試しください。");
 	}
 
-	// DB書き込み
-	let routeData = fs.readFileSync(`${__dirname}/db/routeData.json`, "utf-8");
-	routeData = JSON.parse(routeData);
+	try {
+		// 既存のルートドキュメントを取得または新規作成
+		let routeDocument = await RouteData.findOne({
+			building: roomData.building,
+			floor: roomData.floor,
+			room: room,
+		});
 
-	// 建物、フロア、部屋の構造が存在することを確認し、存在しない場合は作成
-	if (!routeData[roomData.building]) {
-		routeData[roomData.building] = {};
-	}
-	if (!routeData[roomData.building][roomData.floor]) {
-		routeData[roomData.building][roomData.floor] = {};
-	}
-	if (!routeData[roomData.building][roomData.floor][room]) {
-		routeData[roomData.building][roomData.floor][room] = {};
-	}
-
-	// データが重複しないように確認
-	let routes = routeData[roomData.building][roomData.floor][room];
-	for (let route in routes) {
-		if (
-			routes[route].EV === EV &&
-			routes[route].stairs === stairs &&
-			routes[route].orderOfPriority === orderOfPriority
-		) {
-			return res.status(400).send("その経路情報はすでに登録されています。");
+		if (!routeDocument) {
+			routeDocument = new RouteData({
+				building: roomData.building,
+				floor: roomData.floor,
+				room: room,
+				routes: new Map(),
+			});
 		}
-	}
 
-	// 登録・書き込み
-	let routeCount = Object.keys(routes).length;
-	routeData[roomData.building][roomData.floor][room][`route${routeCount + 1}`] =
-		{
+		// データが重複しないように確認
+		const existingRoutes = Object.fromEntries(routeDocument.routes);
+		for (let routeKey in existingRoutes) {
+			const route = existingRoutes[routeKey];
+			if (
+				route.EV === EV &&
+				route.stairs === stairs &&
+				route.orderOfPriority === orderOfPriority
+			) {
+				return res.status(400).send("その経路情報はすでに登録されています。");
+			}
+		}
+
+		// 新しいルートを追加
+		const routeCount = routeDocument.routes.size;
+		const newRouteKey = `route${routeCount + 1}`;
+		routeDocument.routes.set(newRouteKey, {
 			EV: EV,
 			stairs: stairs,
 			orderOfPriority: orderOfPriority,
-		};
-	fs.writeFileSync(
-		`${__dirname}/db/routeData.json`,
-		JSON.stringify(routeData, null, 2)
-	);
+		});
 
-	// Discord webhook通知
-	const webhookURL = process.env.Discord_Webhook_URL;
-	if (!webhookURL) {
-		console.error(
-			"[ERROR] Discord Webhook URL is not set. Please set on .env file."
-		);
-		console.info(`[INFO] Route data submitted: ${JSON.stringify(req.body)}`);
-	} else {
-		const webhookData = {
-			content: `新しい経路情報が登録されました。\n部屋番号: ${room}\nEV: ${EV}\n階段: ${stairs}\n優先度: ${orderOfPriority}`,
-		};
+		// MongoDBに保存
+		await routeDocument.save();
 
-		try {
-			await fetch(webhookURL, {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(webhookData),
-			});
-		} catch (error) {
-			console.error("[ERROR] Failed to send Discord webhook:", error);
-			console.info(
-				`Discord webhookの送信に失敗しました。送信に失敗した登録データ: ${JSON.stringify(
-					req.body
-				)}`
+		// Discord webhook通知
+		const webhookURL = process.env.Discord_Webhook_URL;
+		if (!webhookURL) {
+			console.error(
+				"[ERROR] Discord Webhook URL is not set. Please set on .env file."
 			);
-		}
-	}
+			console.info(`[INFO] Route data submitted: ${JSON.stringify(req.body)}`);
+		} else {
+			const webhookData = {
+				content: `新しい経路情報が登録されました。\n部屋番号: ${room}\nEV: ${EV}\n階段: ${stairs}\n優先度: ${orderOfPriority}`,
+			};
 
-	return res.status(200).send("データの登録に成功しました。");
+			try {
+				await fetch(webhookURL, {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(webhookData),
+				});
+			} catch (error) {
+				console.error("[ERROR] Failed to send Discord webhook:", error);
+				console.info(
+					`Discord webhookの送信に失敗しました。送信に失敗した登録データ: ${JSON.stringify(
+						req.body
+					)}`
+				);
+			}
+		}
+
+		return res.status(200).send("データの登録に成功しました。");
+	} catch (error) {
+		console.error("[KGU EV Guide] Error saving route data:", error);
+		return res.status(500).send("データベースエラーが発生しました。");
+	}
 });
 
-app.listen(port, function () {
-	console.log(`[KGU EV Guide] Application Listening on Port ${port}`);
+// MongoDB接続とデータ初期化
+async function startApplication() {
+	try {
+		// MongoDB接続
+		await connectDB();
+
+		// データベースが空の場合、JSONファイルから初期化
+		const existingData = await RouteData.countDocuments();
+		if (existingData === 0) {
+			await initializeRouteDataFromJSON();
+		}
+
+		// 定期同期開始
+		startPeriodicSync();
+
+		// サーバー開始
+		app.listen(port, function () {
+			console.log(`[KGU EV Guide] Application Listening on Port ${port}`);
+		});
+	} catch (error) {
+		console.error("[KGU EV Guide] Failed to start application:", error);
+		process.exit(1);
+	}
+}
+startApplication();
+
+// Graceful shutdown
+process.on("SIGINT", async () => {
+	console.log("\n[KGU EV Guide] Received SIGINT. Graceful shutdown...");
+	try {
+		await syncMongoDBToJSON();
+		await mongoose.connection.close();
+		console.log("[KGU EV Guide] MongoDB connection closed.");
+		process.exit(0);
+	} catch (error) {
+		console.error("[KGU EV Guide] Error during shutdown:", error);
+		process.exit(1);
+	}
+});
+
+process.on("SIGTERM", async () => {
+	console.log("\n[KGU EV Guide] Received SIGTERM. Graceful shutdown...");
+	try {
+		await mongoose.connection.close();
+		console.log("[KGU EV Guide] MongoDB connection closed.");
+		process.exit(0);
+	} catch (error) {
+		console.error("[KGU EV Guide] Error during shutdown:", error);
+		process.exit(1);
+	}
 });
