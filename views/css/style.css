@@ -143,6 +143,11 @@ select {
     border-radius: 10px;
     font-weight: bold;
     box-sizing: border-box;
+    font-size: smaller;
+}
+
+select:disabled {
+    cursor: not-allowed;
 }
 
 #reportForm {
