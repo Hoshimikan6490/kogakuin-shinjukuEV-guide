@@ -27,6 +27,20 @@
 
 ## 構築等
 
+### 環境設定
+
+1. `.env.example` を `.env` にコピーして、必要に応じて設定を変更
+   ```bash
+   cp .env.example .env
+   ```
+
+2. MongoDB接続設定（Docker Compose使用の場合は変更不要です。ローカルでDocker Composeを使用しない場合は適切なものに変更してください）
+   ```
+   MONGODB_URI=mongodb://localhost:27017/
+   ```
+
+### 起動手順
+
 1. `sudo apt update`
 2. `sudo apt upgrade -y`
 3. nodejsやnpmをインストールした場合は`npm run build`、していない場合は次のコマンド実行すると、dockerの実行環境が構築される。
@@ -39,11 +53,20 @@ chmod +x build.sh
 sudo docker-compose build --no-cache
 sudo docker-compose up -d
 ```
-5. 停止する場合は、nodejsやnpmをインストールした場合は`npm run stop`、していない場合は次のコマンド実行すると、アプリケーションが停止する。
+
+### データベース仕様
+
+- **routeDB**: MongoDBで管理（mongoose使用）
+  - 初期データは `db/routeData.json` から自動読み込み
+  - 30分ごとに自動的にJSONファイルに同期
+
+### 停止・キャッシュクリア
+
+1. 停止する場合は、nodejsやnpmをインストールした場合は`npm run stop`、していない場合は次のコマンド実行すると、アプリケーションが停止する。
 ```
 sudo docker-compose down
 ```
-6. 何回か起動や停止を繰り返すとdockerのキャッシュが膨大な量になってエラーが出るので、その際は、nodejsやnpmをインストールした場合は`npm run cacheClear`、していない場合は次のコマンド実行すると、dockerの実行環境が構築される。
+2. 何回か起動や停止を繰り返すとdockerのキャッシュが膨大な量になってエラーが出るので、その際は、nodejsやnpmをインストールした場合は`npm run cacheClear`、していない場合は次のコマンド実行すると、dockerの実行環境が構築される。
 ```
 chmod +x cacheClear.sh
 ./cacheClear.sh
