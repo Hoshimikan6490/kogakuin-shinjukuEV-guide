@@ -10,7 +10,7 @@ const {
 	connectDB,
 	initializeRouteDataFromJSON,
 	startPeriodicSync,
-  syncMongoDBToJSON,
+	syncMongoDBToJSON,
 } = require("./utils/database");
 const RouteData = require("./models/RouteData");
 
@@ -171,7 +171,7 @@ app.get("/search", async (req, res) => {
 	let routes = null;
 	if (roomData.building && roomData.floor && roomData.room) {
 		try {
-      const routeDocument = await RouteData.findOne({
+			const routeDocument = await RouteData.findOne({
 				building: roomData.building,
 				floor: roomData.floor,
 				room: roomData.room,
@@ -317,8 +317,8 @@ startApplication();
 // Graceful shutdown
 process.on("SIGINT", async () => {
 	console.log("\n[KGU EV Guide] Received SIGINT. Graceful shutdown...");
-  try {
-    await syncMongoDBToJSON();
+	try {
+		await syncMongoDBToJSON();
 		await mongoose.connection.close();
 		console.log("[KGU EV Guide] MongoDB connection closed.");
 		process.exit(0);
