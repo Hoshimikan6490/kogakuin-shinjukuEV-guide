@@ -1,63 +1,61 @@
 <!DOCTYPE html>
 <html lang="ja">
-
-<head>
+  <head>
     <%- include('../templates/head'); %>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <%- include('../templates/header'); %>
+      <%- include('../templates/header'); %>
     </header>
 
     <main>
-        <%- include('../templates/body'); %>
-            <div class="waku">
-                <h1>経路を探したい教室を選択してください</h1>
-                <div class="form">
-                    <form id="roomForm">
-                        <div class="selectBox">
-                            <label for="building">建物</label>
-                            <select name="building" id="building" required>
-                                <option value="" disabled selected>選択してください</option>
-                                <option value="A">高層棟(A棟)</option>
-                                <option value="B">低層棟(B棟)</option>
-                            </select>
-                        </div>
-                        <div class="selectBox">
-                            <label for="floor">階数</label>
-                            <select name="floor" id="floor" required>
-                                <option value="" disabled selected>選択してください</option>
-                            </select>
-                        </div>
-                        <div class="selectBox">
-                            <label for="room">教室</label>
-                            <select name="room" id="room" required>
-                                <option value="" disabled selected>選択してください</option>
-                            </select>
-                        </div>
-                        <div class="buttonBox">
-                            <button type="submit">検索</button>
-                        </div>
-                    </form>
-                </div>
-                <p>※上から順に選択してください</p>
+      <%- include('../templates/body'); %>
+      <div class="waku">
+        <h1>経路を探したい教室を選択してください</h1>
+        <div class="form">
+          <form id="roomForm">
+            <div class="selectBox">
+              <label for="building">建物</label>
+              <select name="building" id="building" required>
+                <option value="" disabled selected>選択してください</option>
+                <option value="A">高層棟(A棟)</option>
+                <option value="B">低層棟(B棟)</option>
+              </select>
             </div>
-            <div class="waku" id="report">
-                <h1>経路情報の報告はこちら</h1>
-                <div class="buttonBox">
-                    <button onclick="location.href='/report'">報告フォームへ</button>
-                </div>
+            <div class="selectBox">
+              <label for="floor">階数</label>
+              <select name="floor" id="floor" required>
+                <option value="" disabled selected>選択してください</option>
+              </select>
             </div>
+            <div class="selectBox">
+              <label for="room">教室</label>
+              <select name="room" id="room" required>
+                <option value="" disabled selected>選択してください</option>
+              </select>
+            </div>
+            <div class="buttonBox">
+              <button type="submit">検索</button>
+            </div>
+          </form>
+        </div>
+        <p>※上から順に選択してください</p>
+      </div>
+      <div class="waku" id="report">
+        <h1>経路情報の報告はこちら</h1>
+        <div class="buttonBox">
+          <button onclick="location.href='/report'">報告フォームへ</button>
+        </div>
+      </div>
     </main>
 
     <a class="return_top" href="#">▲TOPへ戻る</a>
 
     <footer>
-        <%- include('../templates/footer'); %>
+      <%- include('../templates/footer'); %>
     </footer>
-</body>
+  </body>
 
-<script type="module" src="/js/index/main.js"></script>
-
+  <script type="module" src="/js/index/main.js"></script>
 </html>
