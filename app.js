@@ -24,7 +24,16 @@ function isAvailableRoomID(roomDB, roomID) {
 	if (roomID.match(/^[AB]-\d{4}$/)) {
 		// 部屋番号の形式が正しい場合、部屋DBに存在するか確認
 		let building = roomID.split("-")[0];
-		let floor = roomID.split("-")[1].substring(0, 2).replace(/^0+/, "");
+		let roomNumber = roomID.split("-")[1];
+
+		let floor;
+		if (roomNumber.startsWith("B")) {
+			// 地下フロアの場合
+			floor = `B${roomNumber.substring(1, 2)}`;
+		} else {
+			// 地上フロアの場合
+			floor = String(Number(roomNumber.substring(0, 2)));
+		}
 
 		// 建物が存在するか確認
 		if (roomDB[building]) {
@@ -65,10 +74,20 @@ function checkRoomID(roomID, building, floor) {
 		if (roomID) {
 			// 正しい部屋番号形式であり、その部屋が存在するか確認
 			if (isAvailableRoomID(roomDB, roomID)) {
+				let roomNumber = roomID.split("-")[1];
+				let floor;
+				if (roomNumber.startsWith("B")) {
+					// 地下フロアの場合
+					floor = `B${roomNumber.substring(1, 2)}`;
+				} else {
+					// 地上フロアの場合
+					floor = String(Number(roomNumber.substring(0, 2)));
+				}
+
 				return (roomInfo = {
 					correct: true,
 					building: roomID.split("-")[0],
-					floor: String(Number(roomID.split("-")[1].substring(0, 2))),
+					floor: floor,
 					room: roomID,
 				});
 			} else {
