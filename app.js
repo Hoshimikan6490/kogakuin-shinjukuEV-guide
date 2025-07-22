@@ -231,7 +231,9 @@ app.post("/api/routeDataSubmit", async (req, res) => {
     } catch (error) {
       console.error("[ERROR] Failed to send Discord webhook:", error);
       console.info(
-        `Discord webhookの送信に失敗しました。送信に失敗した登録データ: ${req.body}`
+        `Discord webhookの送信に失敗しました。送信に失敗した登録データ: ${JSON.stringify(
+          req.body
+        )}`
       );
     }
   }
