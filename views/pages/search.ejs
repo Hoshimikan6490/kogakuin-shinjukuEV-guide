@@ -1,34 +1,77 @@
 <!DOCTYPE html>
 <html lang="ja">
-
-<head>
+  <head>
     <%- include('../templates/head'); %>
-</head>
+  </head>
 
-<body>
+  <body>
     <header>
-        <%- include('../templates/header'); %>
+      <%- include('../templates/header'); %>
     </header>
 
     <main>
-        <%- include('../templates/body'); %>
-            <div class="waku" id="searchResult">
-                <h1><%- room %>への検索結果</h1>
-                <% if (routes) { %>
-                    <p>経路の第１候補： <%- routes.route1 %></p>
-                    <p>経路の第２候補： <%- routes.route2 %></p>
-                    <p>経路の第３候補： <%- routes.route3 %></p>
-                    <% } else { %>
-                        <p>検索結果はありませんでした。</p>
-                        <% } %>
-            </div>
+      <%- include('../templates/body'); %>
+      <div class="waku" id="searchResult">
+        <h1><%- room %>への検索結果</h1>
+        <% if (routes && Object.keys(routes).length> 0) { %> <%
+        Object.keys(routes).forEach((routeKey, index)=> { %>
+        <div class="form route-result">
+          <h3>経路の第<%- index + 1 %>候補</h3>
+          <% const hasEV=routes[routeKey].EV && routes[routeKey].EV !=='none' ; %>
+          <% const hasStairs=routes[routeKey].stairs && routes[routeKey].stairs !=='none' ; %>
+
+          <% if (hasEV && hasStairs) { %>
+          <% if (routes[routeKey].orderOfPriority==='EV' ) { %>
+          <p>
+            <strong>移動方法:</strong>
+            <%- routes[routeKey].EV %>を利用して、その後に<%- routes[routeKey].stairs
+                            %>を利用して移動してください
+          </p>
+          <% } else if (routes[routeKey].orderOfPriority==='stairs' ) { %>
+          <p>
+            <strong>移動方法:</strong>
+            <%- routes[routeKey].stairs %>を利用して、その後に<%- routes[routeKey].EV
+                              %>を利用して移動してください
+          </p>
+          <% } else { %>
+          <p>
+            <strong>エレベーター:</strong>
+            <%- routes[routeKey].EV %>
+          </p>
+          <p>
+            <strong>階段:</strong>
+            <%- routes[routeKey].stairs %>
+          </p>
+          <% } %>
+          <% } else if (hasEV && !hasStairs) { %>
+          <p>
+            <strong>移動方法:</strong>
+            <%- routes[routeKey].EV %>を利用して移動してください
+          </p>
+          <% } else if (!hasEV && hasStairs) { %>
+          <p>
+            <strong>移動方法:</strong>
+            <%- routes[routeKey].stairs %>を利用して移動してください
+          </p>
+          <% } %>
+
+          <% if (!hasEV && !hasStairs) { %>
+          <p class="no-data">この教室への経路情報はまだ登録されていません</p>
+          <% } %>
+        </div>
+        <% }); %>
+        <% } else { %>
+        <div class="form no-results">
+          <p>検索結果はありませんでした。</p>
+        </div>
+        <% } %>
+      </div>
     </main>
 
     <a class="return_top" href="#">▲TOPへ戻る</a>
 
     <footer>
-        <%- include('../templates/footer'); %>
+      <%- include('../templates/footer'); %>
     </footer>
-</body>
-
+  </body>
 </html>
