@@ -1,21 +1,43 @@
 {
-  "name": "kogakuin-shinjukuev-guide-backend",
-  "version": "1.0.0",
-  "description": "",
-  "license": "ISC",
-  "author": "",
-  "type": "commonjs",
-  "scripts": {
-    "build": "chmod +x build.sh && ./build.sh",
-    "start": "sudo docker-compose build --no-cache && sudo docker-compose up -d",
-    "stop": "sudo docker-compose down",
-    "cacheClear": "chmod +x cacheClear.sh && ./cacheClear.sh",
-    "dev": "node app.js"
-  },
-  "dependencies": {
-    "dotenv": "^17.2.0",
-    "ejs": "^3.1.10",
-    "express": "^5.1.0",
-    "node-fetch": "^3.3.2"
-  }
+	"name": "kogakuin-shinjukuev-guide-backend",
+	"version": "1.0.0",
+	"description": "[非公式]工学院大学新宿キャンパスのエレベーター・階段案内システム - [Unofficial] Kogakuin University Shinjuku Campus Elevator and Stairs Guide System",
+	"keywords": [
+		"kogakuin",
+		"elevator",
+		"navigation",
+		"campus",
+		"guide",
+		"express",
+		"ejs"
+	],
+	"homepage": "https://github.com/Hoshimikan6490/kogakuin-shinjukuEV-guide",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Hoshimikan6490/kogakuin-shinjukuEV-guide.git"
+	},
+	"bugs": {
+		"url": "https://github.com/Hoshimikan6490/kogakuin-shinjukuEV-guide/issues"
+	},
+	"license": "ISC",
+	"author": "Hoshimikan6490",
+	"main": "app.js",
+	"type": "commonjs",
+	"engines": {
+		"node": ">=18.0.0",
+		"npm": ">=8.0.0"
+	},
+	"scripts": {
+		"build": "chmod +x build.sh && ./build.sh",
+		"start": "sudo docker-compose build --no-cache && sudo docker-compose up -d",
+		"stop": "sudo docker-compose down",
+		"cacheClear": "chmod +x cacheClear.sh && ./cacheClear.sh",
+		"dev": "node app.js"
+	},
+	"dependencies": {
+		"dotenv": "^17.2.0",
+		"ejs": "^3.1.10",
+		"express": "^5.1.0",
+		"node-fetch": "^3.3.2"
+	}
 }
