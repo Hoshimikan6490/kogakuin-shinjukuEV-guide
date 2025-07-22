@@ -27,6 +27,5 @@ export async function onSubmit() {
 		})
 		.catch((error) => {
 			console.error("送信エラー:", error);
-			alert("送信に失敗しました。ネットワーク接続を確認してください。");
 		});
 }
