@@ -68,6 +68,7 @@ export async function getRoom() {
 				const option = document.createElement("option");
 				option.value = room;
 				option.textContent = room;
+				option.disabled = room == "工事中";
 				roomSelect.add(option);
 			});
 		})
