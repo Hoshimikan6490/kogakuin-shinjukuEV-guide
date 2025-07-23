@@ -30,7 +30,7 @@ app.use("views", express.static("views"));
 // 部屋番号が正しいか確認するfunction
 function isAvailableRoomID(roomDB, roomID) {
 	// 形式が正しいか確認
-	if (roomID.match(/^[AB]-\d{4}$/)) {
+	if (roomID.match(/^[AB]-(\d{4}|B\d{3})$/)) {
 		// 部屋番号の形式が正しい場合、部屋DBに存在するか確認
 		let building = roomID.split("-")[0];
 		let roomNumber = roomID.split("-")[1];
