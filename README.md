@@ -4,16 +4,22 @@
 
 新宿キャンパスのエレベーターを案内する。(階段もおまけで)
 
-## 構想
+## 動作の流れ
 
-### 動作の流れ(イメージ)
+### 確認時の動作
 
-1. ユーザーは入力フォームに行きたい教室を入力
-2. APIにgetリクエストする
-3. サーバーは、getリクエストを元に利用可能な行き方をreturn
-4. レスポンスを表示
+1. `/`にユーザーがアクセスし、Web UIから教室番号を選択
+2. `/search?room=<教室番号>`に遷移し、CGI側が教室番号からデータを取得して表示する
 
-### その他、実装予定の仕様
+### 登録時の動作
+
+1. `/report`にユーザーがアクセスし、必要な情報を全て入力し、送信ボタンを押す
+2. `/api/routeDataSubmit`に対してPOSTリクエストを行い、経路情報が送信される
+3. CGI側でデータの重複が無いか確認し、重複しそうならエラーを返す
+4. CGI側でDBにデータを登録し、その後Discord webhookで新規データ登録を通知する
+5. 登録に成功したら、その旨を表示して`/`に遷移する
+
+## 実装予定の仕様
 
 - [ ] 入室に学生証タッチが必要な教室はその旨を表示
 - [x] EVだけじゃなくて階段情報も欲しい。
@@ -25,7 +31,24 @@
 - キャンパスマップ：https://www.kogakuin.ac.jp/campus/fbb28u0000005ate-att/20250401_kogakuinmap.pdf
 - docker-composeインストール手順： https://qiita.com/kensukeyoshida/items/d6a735350f406961110f
 
-## 構築等
+## 使用技術
+
+### npmライブラリと使用目的
+
+- Node.js: CGIアプリケーションなどのエンジンとして使用
+- Express: Webサーバ(CGI)のアプリケーションとして使用
+- ejs: `/search`において容易にCGIからのデータを表示出来るようにするために使用
+- MongoDB: 経路情報のデータベースとして使用
+- dotenv: 環境変数(DBのURIと、DiscordのWebhook URL)を取得できるようにするために使用
+- node-fetch: CGIからDiscordのWebhookに対してPOSTリクエストを行うために使用
+
+### データベース仕様
+
+- **routeDB**: MongoDBで管理（mongoose使用）
+  - 初期データは `db/routeData.json` から自動読み込み
+  - 30分ごとに自動的にJSONファイルに同期
+
+## 構築手順
 
 ### 環境設定
 
@@ -53,12 +76,6 @@ chmod +x build.sh
 sudo docker-compose build --no-cache
 sudo docker-compose up -d
 ```
-
-### データベース仕様
-
-- **routeDB**: MongoDBで管理（mongoose使用）
-  - 初期データは `db/routeData.json` から自動読み込み
-  - 30分ごとに自動的にJSONファイルに同期
 
 ### 停止・キャッシュクリア
 
